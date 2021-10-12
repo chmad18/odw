@@ -1,0 +1,47 @@
+version: '3.5'
+
+services:
+  proxy:
+    build: ./proxy/
+    ports: 
+      - 443:443
+    restart: 'always'
+    depends_on: 
+      - backend
+    container_name: proxy
+    networks: 
+      - frontend
+
+  backend:
+    build: ./backend/
+    depends_on: 
+      - database
+    restart: 'always'
+    container_name: backend
+    networks: 
+      - backend
+      - frontend
+
+  database:
+    build: ./db/
+    environment:
+        - MYSQL_ALLOW_EMPTY_PASSWORD=true,
+        - MYSQL_USER=root,
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: database
+    networks: 
+      - backend
+
+networks: 
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    
+
+
+
+
+
+
+
